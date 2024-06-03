@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Text, SafeAreaView, View, Pressable } from 'react-native'
 import { ChevronLeftIcon } from 'react-native-heroicons/solid'
 import {
@@ -16,15 +16,12 @@ import { CreateTaskApi, TaskQueryKeys } from '../services'
 import { CreateTaskSchema } from '../validations'
 
 import { CreateTaskPayload, TaskStatusOptions, TaskStatus } from '../interface'
-import { useAppNavigation, useHomeTabNavigation } from '../hook'
+import { useHomeTabNavigation } from '../hook'
 import { Button, FormInput } from '../components'
-import { useAuthContext } from '../contexts/auth.context'
 
 export const CreateTaskScreen = () => {
 	const queryClient = useQueryClient()
 	const { homeTabNavigation } = useHomeTabNavigation()
-	const { currentUser } = useAuthContext()
-	const { handleSignOut } = useAppNavigation()
 
 	const [defaultSelectedValue, setDefaultSelectedValue] = useState<TaskStatus>()
 
@@ -64,12 +61,6 @@ export const CreateTaskScreen = () => {
 	})
 
 	const onSubmit = handleSubmit(data => mutate(data))
-
-	useEffect(() => {
-		if (!currentUser) {
-			handleSignOut()
-		}
-	}, [currentUser, handleSignOut])
 
 	return (
 		<SafeAreaView className='flex-1 bg-plo-purple-200'>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Text, SafeAreaView, View } from 'react-native'
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { format } from 'date-fns'
@@ -12,12 +12,6 @@ import { useAppNavigation } from '../hook'
 export const ProfileScreen = () => {
 	const { currentUser, userToken } = useAuthContext()
 	const { handleSignOut } = useAppNavigation()
-
-	useEffect(() => {
-		if (!currentUser) {
-			handleSignOut()
-		}
-	}, [currentUser, handleSignOut])
 
 	return (
 		<SafeAreaView>

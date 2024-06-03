@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
 	Text,
 	View,
@@ -19,19 +19,12 @@ import Toast from 'react-native-toast-message'
 
 import { Button, StatusPill } from '../components'
 import { GetTasksApi, TaskQueryKeys, DeleteTaskApi } from '../services'
-import {
-	useAppNavigation,
-	useHomeStackNavigation,
-	useHomeTabNavigation
-} from '../hook'
+import { useHomeStackNavigation, useHomeTabNavigation } from '../hook'
 import { colors } from '../../utils'
-import { useAuthContext } from '../contexts/auth.context'
 
 export const HomeScreen = () => {
 	const queryClient = useQueryClient()
 	const { navigation } = useHomeStackNavigation()
-	const { currentUser } = useAuthContext()
-	const { handleSignOut } = useAppNavigation()
 
 	const { data, isPending } = useQuery({
 		queryKey: [TaskQueryKeys.getTasks],
@@ -52,12 +45,6 @@ export const HomeScreen = () => {
 				})
 			}
 		})
-
-	useEffect(() => {
-		if (!currentUser) {
-			handleSignOut()
-		}
-	}, [currentUser, handleSignOut])
 
 	return (
 		<SafeAreaView className='flex-1 bg-plo-purple-200'>
