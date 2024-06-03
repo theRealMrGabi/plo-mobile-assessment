@@ -75,8 +75,6 @@ The additional configuration and package of choice is listed below:
 - Update task screen
 - View profile screen
 
-->
-
 ![Splash Screen](https://i.postimg.cc/1gDytkmC/Splash-screen.png 'Splash Screen')
 
 ![Signup Screen](https://i.postimg.cc/CzKMNr75/Signup.png 'Signup Screen')
@@ -88,4 +86,3 @@ The additional configuration and package of choice is listed below:
 ![View Tasks](https://i.postimg.cc/KRsGs7pN/VIew-tasks.png 'View Tasks')
 
 ![View Profile](https://i.postimg.cc/nMphshQv/Profile.png 'View Profile')
--->
