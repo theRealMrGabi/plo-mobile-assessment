@@ -5,10 +5,9 @@ module.exports = {
 		extend: {
 			colors: {
 				plo: {
-					'blue-100': '#0B3954',
-					'teal-100': '#087E8B',
-					'teal-200': '#BFD7EA',
-					'teal-300': '#1D4E89',
+					'black-100': '#112022',
+					'blue-100': '#2B7FFC',
+					'blue-200': '#EAF5FF',
 					'purple-100': '#613BE7',
 					'purple-200': '#F0EDFD',
 					'purple-300': '#aa96da'

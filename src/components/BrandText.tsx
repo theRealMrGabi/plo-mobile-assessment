@@ -9,7 +9,7 @@ export const BrandText = ({ className }: Props) => {
 	return (
 		<Text
 			className={cn(
-				'text-[#41EAD4] font-bold text-5xl text-center',
+				'text-plo-purple-300 font-bold text-5xl text-center',
 				className
 			)}>
 			Task Management

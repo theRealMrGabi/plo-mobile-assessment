@@ -6,16 +6,18 @@ import {
 	heightPercentageToDP as hp,
 	widthPercentageToDP as wp
 } from 'react-native-responsive-screen'
-import { HomeIcon, UserIcon } from 'react-native-heroicons/outline'
+import { HomeIcon, UserIcon, PlusIcon } from 'react-native-heroicons/outline'
 import {
 	HomeIcon as HomeIconSolid,
-	UserIcon as UserIconSolid
+	UserIcon as UserIconSolid,
+	PlusIcon as PlusIconSolid
 } from 'react-native-heroicons/solid'
 import clsx from 'clsx'
 
 import { HomeTab } from '../interface'
 import { colors } from '../../utils'
-import { ProfileScreen, HomeScreen } from '../screens'
+import { ProfileScreen, CreateTaskScreen } from '../screens'
+import { HomeStackNavigation } from './home.stack.navigation'
 
 interface Props {
 	activeKey: keyof HomeTab
@@ -32,7 +34,7 @@ const isAndroid = Platform.OS === 'android'
 export const HomeTabNavigation = () => {
 	return (
 		<Tab.Navigator
-			initialRouteName='Home'
+			initialRouteName='HomeStack'
 			screenOptions={({ route }) => ({
 				tabBarIcon: ({ focused }) =>
 					MenuIcons({
@@ -54,7 +56,8 @@ export const HomeTabNavigation = () => {
 					paddingBottom: isAndroid ? hp(1) : 'auto'
 				}
 			})}>
-			<Tab.Screen name='Home' component={HomeScreen} />
+			<Tab.Screen name='HomeStack' component={HomeStackNavigation} />
+			<Tab.Screen name='CreateTask' component={CreateTaskScreen} />
 			<Tab.Screen name='Profile' component={ProfileScreen} />
 		</Tab.Navigator>
 	)
@@ -69,10 +72,15 @@ const MenuIcons = ({
 }) => {
 	const TabIcon = ({ activeKey }: Props) => {
 		const activeIcon = {
-			Home: focused ? (
+			HomeStack: focused ? (
 				<HomeIconSolid {...iconProps} />
 			) : (
 				<HomeIcon {...iconProps} />
+			),
+			CreateTask: focused ? (
+				<PlusIconSolid {...iconProps} />
+			) : (
+				<PlusIcon {...iconProps} />
 			),
 			Profile: focused ? (
 				<UserIconSolid {...iconProps} />

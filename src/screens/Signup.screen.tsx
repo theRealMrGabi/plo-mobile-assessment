@@ -1,20 +1,25 @@
 import React, { useState } from 'react'
-import { View, Text, SafeAreaView } from 'react-native'
+import { View, Text, SafeAreaView, Modal, Alert, Linking } from 'react-native'
 
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { useForm, FormProvider } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import Toast from 'react-native-toast-message'
 
 import { Button, FormInput, Checkbox, BrandText } from '../components'
 import { useAppNavigation } from '../hook'
 
 import { SignupSchema } from '../validations'
 import { SignupPayload } from '../interface'
+import { SignupApi } from '../services'
 
 export const SignupScreen = () => {
 	const { appNavigation } = useAppNavigation()
 
+	const [modalVisible, setModalVisible] = useState(false)
 	const [termsChecked, setTermsChecked] = useState(false)
+	const [activationUrl, setActivationUrl] = useState<string | null>(null)
 
 	const methods = useForm<SignupPayload>({
 		resolver: yupResolver(SignupSchema),
@@ -27,9 +32,28 @@ export const SignupScreen = () => {
 		formState: { errors }
 	} = methods
 
+	const { isPending, mutate } = useMutation({
+		mutationFn: SignupApi,
+		onSuccess: async response => {
+			Toast.show({
+				type: 'success',
+				text1: 'Signup successful'
+			})
+
+			setActivationUrl(response.email_preview_link)
+			setModalVisible(true)
+		}
+	})
+
 	const onSubmit = handleSubmit(data => {
-		console.log('🚀 ==> data:', data)
-		appNavigation.navigate('MainApp')
+		if (!termsChecked) {
+			return Toast.show({
+				type: 'info',
+				text1: 'Accept terms & conditions'
+			})
+		}
+
+		mutate(data)
 	})
 
 	return (
@@ -40,7 +64,7 @@ export const SignupScreen = () => {
 				<Text
 					className='text-black font-bold pl-2'
 					style={{ fontSize: hp(2.5) }}>
-					Signup!
+					Sign Up!
 				</Text>
 
 				<Text className='text-gray-500 p-2 mb-8' style={{ fontSize: hp(1.8) }}>
@@ -51,15 +75,15 @@ export const SignupScreen = () => {
 					<FormInput
 						placeholder='Enter first name'
 						label='First name'
-						{...register('firstName')}
-						errorMessage={errors.firstName?.message}
+						{...register('first_name')}
+						errorMessage={errors.first_name?.message}
 					/>
 
 					<FormInput
 						placeholder='Enter last name'
 						label='Last name'
-						{...register('lastName')}
-						errorMessage={errors.lastName?.message}
+						{...register('last_name')}
+						errorMessage={errors.last_name?.message}
 					/>
 
 					<FormInput
@@ -87,9 +111,57 @@ export const SignupScreen = () => {
 					</View>
 
 					<View className='mt-8'>
-						<Button onPress={() => onSubmit()}>Create account</Button>
+						<Button onPress={onSubmit} disabled={isPending}>
+							Create account
+						</Button>
 					</View>
 				</FormProvider>
+
+				<Text className='text-center font-medium'>
+					Already have an account?{' '}
+					<Text
+						className='font-bold text-plo-purple-100'
+						onPress={() => appNavigation.navigate('Signin')}>
+						Signin
+					</Text>
+				</Text>
+
+				<Modal
+					animationType='slide'
+					transparent={true}
+					visible={modalVisible}
+					onRequestClose={() => {
+						Alert.alert('Modal has been closed.')
+						setModalVisible(!modalVisible)
+					}}>
+					<View className='flex-1 justify-center items-center bg-white'>
+						<Text className='text-plo-purple-100 font-bold text-xl'>
+							Signup Successful
+						</Text>
+
+						<Text className='text-lg py-3'>
+							Click link below to verify account
+						</Text>
+
+						{activationUrl && (
+							<Text
+								className='py-6'
+								onPress={() => Linking.openURL(activationUrl)}>
+								{activationUrl}
+							</Text>
+						)}
+
+						<Button
+							variant='secondary'
+							className='w-1/2'
+							onPress={() => {
+								setModalVisible(false)
+								appNavigation.navigate('Signin')
+							}}>
+							Close Modal
+						</Button>
+					</View>
+				</Modal>
 			</View>
 		</SafeAreaView>
 	)

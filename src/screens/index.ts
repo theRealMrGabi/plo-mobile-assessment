@@ -1,5 +1,7 @@
+export { CreateTaskScreen } from './CreateTask.screen'
 export { SigninScreen } from './Signin.screen'
 export { SignupScreen } from './Signup.screen'
 export { SplashScreen } from './Splash.screen'
 export { ProfileScreen } from './Profile.screen'
 export { HomeScreen } from './Home.screen'
+export { UpdateTaskScreen } from './UpdateTask.screen'

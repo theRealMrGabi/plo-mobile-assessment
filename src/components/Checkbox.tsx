@@ -1,6 +1,7 @@
 import React from 'react'
 import { CheckBox, CheckBoxProps } from '@rneui/themed'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
+import { colors } from '../../utils'
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 export const Checkbox = ({ children, ...rest }: CheckBoxProps) => {
@@ -12,7 +13,7 @@ export const Checkbox = ({ children, ...rest }: CheckBoxProps) => {
 				color: 'gray',
 				fontWeight: '500'
 			}}
-			checkedColor='#0F0'
+			checkedColor={colors['purple-100']}
 		/>
 	)
 }
