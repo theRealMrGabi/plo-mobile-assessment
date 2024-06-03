@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRoute } from '@react-navigation/core'
 import { Text, SafeAreaView, View, Pressable } from 'react-native'
 import { ChevronLeftIcon } from 'react-native-heroicons/solid'
@@ -22,13 +22,16 @@ import {
 	TaskStatusOptions,
 	HomeStackRouteProps
 } from '../interface'
-import { useHomeStackNavigation } from '../hook'
+import { useAppNavigation, useHomeStackNavigation } from '../hook'
 
 import { Button, FormInput } from '../components'
+import { useAuthContext } from '../contexts/auth.context'
 
 export const UpdateTaskScreen = () => {
 	const route = useRoute<HomeStackRouteProps<'TaskDetail'>>()
 	const { navigation } = useHomeStackNavigation()
+	const { currentUser } = useAuthContext()
+	const { handleSignOut } = useAppNavigation()
 
 	const task = route.params?.task
 
@@ -77,6 +80,12 @@ export const UpdateTaskScreen = () => {
 			taskId: task?._id
 		})
 	)
+
+	useEffect(() => {
+		if (!currentUser) {
+			handleSignOut()
+		}
+	}, [currentUser, handleSignOut])
 
 	return (
 		<SafeAreaView className='flex-1 bg-plo-purple-200'>

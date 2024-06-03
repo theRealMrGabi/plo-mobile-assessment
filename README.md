@@ -1,3 +1,7 @@
+## React Native Assessment
+
+This is a mobile technical assessment
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
@@ -46,34 +50,42 @@ If everything is set up _correctly_, you should see your new app running in your
 
 This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
 
-## Step 3: Modifying your App
+### Includes Configuration for Sustainable Development
 
-Now that you have successfully run the app, let's modify it.
+The additional configuration and package of choice is listed below:
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+-Nativewind (TailwindCSS adapted for React Native)
+-React Query (Cache Server data and make Api Request)
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+- axios (For making HTTP Requests)
+- react-hook-form (works like formik but more optimized)
+- Yup (validation)
+- @hookform/resolvers (Allows you use Yup with react-hook-form)
+- @rneui/themed (For already built components)
+- @react-navigation/native (Navigation)
+- @react-native-async-storage/async-storage
 
-## Congratulations! :tada:
+#### App Functionality and Screens
 
-You've successfully run and modified your React Native App. :partying_face:
+- Splash screen
+- Signin screen
+- Signup screen with Email verification
+- View All tasks screen + delete task
+- Create task screen
+- Update task screen
+- View profile screen
 
-### Now what?
+->
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+![Splash Screen](https://i.postimg.cc/1gDytkmC/Splash-screen.png 'Splash Screen')
 
-# Troubleshooting
+![Signup Screen](https://i.postimg.cc/CzKMNr75/Signup.png 'Signup Screen')
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+![Signin Screen](https://i.postimg.cc/qgwM2H8W/Signin.png 'Signin Screen')
 
-# Learn More
+![Create Task](https://i.postimg.cc/dZssg5KW/Create-task.png 'Create Task')
 
-To learn more about React Native, take a look at the following resources:
+![View Tasks](https://i.postimg.cc/KRsGs7pN/VIew-tasks.png 'View Tasks')
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+![View Profile](https://i.postimg.cc/nMphshQv/Profile.png 'View Profile')
+-->

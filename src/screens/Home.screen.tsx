@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
 	Text,
 	View,
@@ -8,17 +8,56 @@ import {
 } from 'react-native'
 import { useQuery } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
+import Swipeable from 'react-native-gesture-handler/Swipeable'
+import { TrashIcon, QueueListIcon } from 'react-native-heroicons/solid'
+import {
+	heightPercentageToDP as hp,
+	widthPercentageToDP as wp
+} from 'react-native-responsive-screen'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import Toast from 'react-native-toast-message'
 
-import { StatusPill } from '../components'
-import { GetTasksApi, TaskQueryKeys } from '../services'
-import { useHomeStackNavigation } from '../hook'
+import { Button, StatusPill } from '../components'
+import { GetTasksApi, TaskQueryKeys, DeleteTaskApi } from '../services'
+import {
+	useAppNavigation,
+	useHomeStackNavigation,
+	useHomeTabNavigation
+} from '../hook'
+import { colors } from '../../utils'
+import { useAuthContext } from '../contexts/auth.context'
 
 export const HomeScreen = () => {
+	const queryClient = useQueryClient()
 	const { navigation } = useHomeStackNavigation()
+	const { currentUser } = useAuthContext()
+	const { handleSignOut } = useAppNavigation()
+
 	const { data, isPending } = useQuery({
 		queryKey: [TaskQueryKeys.getTasks],
 		queryFn: GetTasksApi
 	})
+
+	const { mutate: deleteTaskMutate, isPending: isDeleteTaskPending } =
+		useMutation({
+			mutationFn: DeleteTaskApi,
+			onSuccess: async () => {
+				await queryClient.invalidateQueries({
+					queryKey: [TaskQueryKeys.getTasks]
+				})
+
+				Toast.show({
+					type: 'info',
+					text1: 'Task deleted'
+				})
+			}
+		})
+
+	useEffect(() => {
+		if (!currentUser) {
+			handleSignOut()
+		}
+	}, [currentUser, handleSignOut])
 
 	return (
 		<SafeAreaView className='flex-1 bg-plo-purple-200'>
@@ -44,30 +83,41 @@ export const HomeScreen = () => {
 					<FlatList
 						data={data || []}
 						keyExtractor={item => item._id}
-						className='my-5'
-						//@ts-expect-error
-						ItemSeparatorComponent={<ItemSeparatorComponent />}
+						className='my-5 mb-24'
+						ItemSeparatorComponent={ItemSeparatorComponent}
+						ListEmptyComponent={<EmptyList />}
+						ListFooterComponentStyle={{
+							marginBottom: hp(5)
+						}}
 						renderItem={({ item }) => (
-							<TouchableOpacity
-								className='border border-plo-purple-300 p-3 rounded-lg space-y-4 bg-white'
+							<Swipeable
 								key={item._id}
-								activeOpacity={0.7}
-								onPress={() =>
-									navigation.navigate('TaskDetail', {
-										task: item
+								renderRightActions={() =>
+									renderDeleteAction({
+										isPending: isDeleteTaskPending,
+										deleteAction: () => deleteTaskMutate(item._id)
 									})
 								}>
-								<Text className='text-lg'>{item.task}</Text>
-								<View className='flex flex-row justify-between items-center'>
-									<Text className='capitalize'>
-										{formatDistanceToNow(new Date(item.date), {
-											addSuffix: true
-										})}
-									</Text>
+								<TouchableOpacity
+									className='border border-plo-purple-300 p-3 rounded-lg space-y-4 bg-white'
+									activeOpacity={0.7}
+									onPress={() =>
+										navigation.navigate('TaskDetail', {
+											task: item
+										})
+									}>
+									<Text className='text-lg'>{item.task}</Text>
+									<View className='flex flex-row justify-between items-center'>
+										<Text className='capitalize'>
+											{formatDistanceToNow(new Date(item.date), {
+												addSuffix: true
+											})}
+										</Text>
 
-									<StatusPill status={item.status} />
-								</View>
-							</TouchableOpacity>
+										<StatusPill status={item.status} />
+									</View>
+								</TouchableOpacity>
+							</Swipeable>
 						)}
 					/>
 				)}
@@ -78,4 +128,40 @@ export const HomeScreen = () => {
 
 const ItemSeparatorComponent = () => {
 	return <View className='my-2' />
+}
+
+const renderDeleteAction = ({
+	deleteAction,
+	isPending
+}: {
+	deleteAction: () => void
+	isPending: boolean
+}) => (
+	<TouchableOpacity
+		className='flex items-center my-auto mx-4'
+		style={{
+			width: wp(10)
+		}}
+		onPress={() => deleteAction()}
+		disabled={isPending}>
+		<TrashIcon size={wp(6)} color='red' />
+	</TouchableOpacity>
+)
+
+export const EmptyList = () => {
+	const { homeTabNavigation } = useHomeTabNavigation()
+	return (
+		<View className='flex-1'>
+			<View className='flex justify-center items-center h-[50vh] space-y-4'>
+				<QueueListIcon size={wp(15)} color={colors['purple-100']} />
+				<Text className='text-lg'> No Active Task</Text>
+				<Button
+					className='w-1/2 bg-plo-purple-300'
+					variant='secondary'
+					onPress={() => homeTabNavigation.navigate('CreateTask')}>
+					Create New Task
+				</Button>
+			</View>
+		</View>
+	)
 }

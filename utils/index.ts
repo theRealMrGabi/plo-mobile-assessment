@@ -43,6 +43,13 @@ export const retrieveObjectFromStorage = async (key: string) => {
 		throw error
 	}
 }
+export const clearLocalStorage = async () => {
+	try {
+		await AsyncStorage.clear()
+	} catch (error) {
+		throw error
+	}
+}
 
 export const pickerSelectStyles = StyleSheet.create({
 	inputIOS: {

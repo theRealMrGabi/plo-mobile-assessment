@@ -49,7 +49,7 @@ export const DeleteTaskApi = async (taskId: string) => {
 		const response = await _axios.delete({
 			url: `task/${taskId}`
 		})
-		return response
+		return response as Task[]
 	} catch (error) {
 		throw error
 	}

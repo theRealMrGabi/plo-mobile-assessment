@@ -3,7 +3,11 @@ import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import axios, { AxiosError, AxiosHeaders } from 'axios'
 import Toast from 'react-native-toast-message'
 
-import { _storageKeys, retrieveObjectFromStorage } from '../../utils'
+import {
+	_storageKeys,
+	retrieveObjectFromStorage,
+	clearLocalStorage
+} from '../../utils'
 
 const apiService = () => {
 	//In a production app, put the baseURL in an environmental variable
@@ -42,7 +46,7 @@ const apiService = () => {
 
 	axiosService.interceptors.response.use(
 		(response: AxiosResponse) => response,
-		(error: AxiosError) => {
+		async (error: AxiosError) => {
 			if (error?.response === undefined) {
 				Toast.show({
 					type: 'error',
@@ -70,6 +74,9 @@ const apiService = () => {
 					['Invalid session token !! Please login again'].includes(errorMessage)
 				) {
 					//signout user here
+					await clearLocalStorage()
+						.then(res => console.log(res))
+						.catch(err => console.error(err))
 				}
 
 				return Promise.reject(errorData)

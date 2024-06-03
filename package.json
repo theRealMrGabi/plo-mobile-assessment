@@ -23,7 +23,6 @@
 		"@rneui/base": "^4.0.0-rc.8",
 		"@rneui/themed": "^4.0.0-rc.8",
 		"@tanstack/react-query": "^5.40.0",
-		"add": "^2.0.6",
 		"axios": "^1.7.2",
 		"clsx": "^2.1.1",
 		"date-fns": "^3.6.0",

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, SafeAreaView, View, Pressable } from 'react-native'
 import { ChevronLeftIcon } from 'react-native-heroicons/solid'
 import {
@@ -15,13 +15,18 @@ import { colors, pickerSelectStyles } from '../../utils'
 import { CreateTaskApi, TaskQueryKeys } from '../services'
 import { CreateTaskSchema } from '../validations'
 
-import { CreateTaskPayload, TaskStatusOptions } from '../interface'
-import { useHomeTabNavigation } from '../hook'
+import { CreateTaskPayload, TaskStatusOptions, TaskStatus } from '../interface'
+import { useAppNavigation, useHomeTabNavigation } from '../hook'
 import { Button, FormInput } from '../components'
+import { useAuthContext } from '../contexts/auth.context'
 
 export const CreateTaskScreen = () => {
 	const queryClient = useQueryClient()
 	const { homeTabNavigation } = useHomeTabNavigation()
+	const { currentUser } = useAuthContext()
+	const { handleSignOut } = useAppNavigation()
+
+	const [defaultSelectedValue, setDefaultSelectedValue] = useState<TaskStatus>()
 
 	const methods = useForm<CreateTaskPayload>({
 		resolver: yupResolver(CreateTaskSchema),
@@ -35,7 +40,8 @@ export const CreateTaskScreen = () => {
 		handleSubmit,
 		register,
 		setValue,
-		formState: { errors }
+		formState: { errors },
+		reset
 	} = methods
 
 	const { isPending, mutate } = useMutation({
@@ -50,11 +56,20 @@ export const CreateTaskScreen = () => {
 				text1: 'Task created'
 			})
 
+			setDefaultSelectedValue(undefined)
+			reset()
+
 			homeTabNavigation.navigate('HomeStack')
 		}
 	})
 
 	const onSubmit = handleSubmit(data => mutate(data))
+
+	useEffect(() => {
+		if (!currentUser) {
+			handleSignOut()
+		}
+	}, [currentUser, handleSignOut])
 
 	return (
 		<SafeAreaView className='flex-1 bg-plo-purple-200'>
@@ -89,7 +104,10 @@ export const CreateTaskScreen = () => {
 							</Text>
 
 							<RNPickerSelect
-								onValueChange={value => setValue('status', value)}
+								onValueChange={value => {
+									setDefaultSelectedValue(value)
+									setValue('status', value)
+								}}
 								items={TaskStatusOptions.map(item => ({
 									label: item,
 									value: item
@@ -98,6 +116,7 @@ export const CreateTaskScreen = () => {
 								style={{
 									...pickerSelectStyles
 								}}
+								value={defaultSelectedValue}
 							/>
 
 							{errors.status?.message && (
